@@ -1,0 +1,31 @@
+	.data
+minus:	.asciiz "texto em minúsculas"
+maius:	.space 20
+	.text
+	.globl main
+main:
+	li	$t0,0		#i=0=t0
+	#array de char - tamanho de cada elemento é um byte
+	la	$t1,minus	#t1 fica com o endereço inicial (endereço do minus)
+while:	addu	$t2,$t1,$t0 	#t2=minus+i (a multiplicação é x1 byte), é o endereço de memoria, contem a posiçao da memoria
+	#addu add unsigned, não dá overflow
+	lb	$t3,0($t2) 	#contem uma copia daquilo que está guardado nessa posição de memoria
+	beq	$t3,'\0',endwhile
+	blt	$t3,'a',else
+	bgt	$t3,'z',else
+	add	$t3,$t3,'A'
+	sub	$t3,$t3,'a' 	#t3=minus[i]+'A'-'a'
+else:	la	$t4,maius
+	add	$t5,$t4,$t0 	#t5=maius+i=endereço de maius[i]
+	sb	$t3,0($t5)  	#maius[i]=$t3 escrita na memoria
+	addi	$t0,$t0,1 	#i++
+	j	while
+	#sb escreve na memoria e lb vai carregar da memoria
+	
+		
+	
+endwhile:
+	la	$a0,maius
+	li	$v0,4
+	syscall
+	
